@@ -46,26 +46,31 @@ function showError(message) {
   }, 5000);
 }
 
-  // Handle the form submission
-  function showError2(message) {
-    const errorMessage = document.getElementById("error-message");
-    errorMessage.style.color = "green";
-    errorMessage.textContent = message;
-    resetAnimation(errorMessage);
-    errorMessage.classList.add("fadeIn");
-    setTimeout(() => {
-      errorMessage.classList.remove("fadeOut");
-      errorMessage.textContent = "";
-      document.getElementsByTagName('label').style.display = 'none';
-      document.getElementsByTagName('button').style.display = 'none';
-      document.getElementsByTagName('progress').style.display = 'none';
-      document.getElementsByTagName('div').style.display = 'none';
-      document.getElementsByTagName('input').style.display = 'none';
-      document.getElementsByTagName('p').style.display = 'none';
-      document.getElementsByTagName('span').style.display = 'none';
-      document.querySelector('h1').textContent = message;
-    }, 5000);
-  }
+// Show success message
+function showSuccess(message) {
+  const successMessage = document.getElementById("success-message");
+  successMessage.textContent = message;
+  resetAnimation(successMessage);
+  successMessage.classList.add("fadeIn");
+  setTimeout(() => {
+    successMessage.classList.remove("fadeOut");
+    successMessage.textContent = "";
+  }, 5000);
+}
+
+// Hide form and display success message
+function displaySuccessMessage(message) {
+  showSuccess(message);
+  setTimeout(() => {
+    const formElements = document.querySelectorAll("#reset-password-form *");
+    formElements.forEach((element) => {
+      element.style.display = "none";
+    });
+    const heading = document.querySelector("#reset-password-form h1");
+    heading.textContent = message;
+    heading.style.display = "block";
+  }, 5000);
+}
 
 function resetAnimation(element) {
   element.style.animation = "none";
@@ -161,7 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
       showError("Password Reset Failed. Please Try Again");
     } else {
       // Show an error message
-      showError2("Password Reset Successful. Please Close The Browser");
+      displaySuccessMessage("Password Reset Successful. Please Close The Browser");
     }
   });  
 });
