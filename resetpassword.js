@@ -62,7 +62,7 @@ function showSuccess(message) {
 function displaySuccessMessage(message) {
   showSuccess(message);
   setTimeout(() => {
-    const formElements = document.querySelectorAll("#reset-password-form *");
+    const formElements = document.querySelectorAll("#reset-password-form *:not(#logo)");
     formElements.forEach((element) => {
       element.style.display = "none";
     });
