@@ -46,6 +46,21 @@ function showError(message) {
   }, 10000);
 }
 
+  // Handle the form submission
+  function showError2(message) {
+    const errorMessage = document.getElementById("error-message");
+    errorMessage.style.color = "green";
+    errorMessage.textContent = message;
+    resetAnimation(errorMessage);
+    errorMessage.classList.add("fadeIn");
+    setTimeout(() => {
+      errorMessage.classList.remove("fadeOut");
+      errorMessage.textContent = "";
+      document.querySelector('form').style.display = 'none';
+      document.querySelector('h1').textContent = message;
+    }, 10000);
+  }
+
 function resetAnimation(element) {
   element.style.animation = "none";
   element.offsetHeight;
@@ -84,64 +99,63 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
   
-
   // Handle the form submission
   const form = document.getElementById('reset-password-form');
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
-
-  // Get the Reset Password button and the loader
-  const resetPasswordButton = e.target.querySelector('button[type="submit"]');
-  const resetPasswordButtonText = resetPasswordButton.querySelector('span');
-  const loader = resetPasswordButton.querySelector('.loader');
-
-  // Show the loader and disable the button
-  loader.style.display = 'inline-block';
-  resetPasswordButton.disabled = true;
-  resetPasswordButtonText.style.display = 'none';
-
-  const newPassword = document.getElementById("new-password").value;
-  const confirmPassword = document.getElementById('confirm-password').value;
-
-  if (newPassword === "") {
-    showError("Passwords cannot be null. Please enter the password");
-
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+  
+    // Get the Reset Password button and the loader
+    const resetPasswordButton = e.target.querySelector('button[type="submit"]');
+    const resetPasswordButtonText = resetPasswordButton.querySelector('span');
+    const loader = resetPasswordButton.querySelector('.loader');
+  
+    // Show the loader and disable the button
+    loader.style.display = 'inline-block';
+    resetPasswordButton.disabled = true;
+    resetPasswordButtonText.style.display = 'none';
+  
+    const newPassword = document.getElementById("new-password").value;
+    const confirmPassword = document.getElementById('confirm-password').value;
+  
+    if (newPassword === "") {
+      showError("Passwords cannot be null. Please enter the password");
+  
+      // Hide the loader and re-enable the button
+      loader.style.display = 'none';
+      resetPasswordButton.disabled = false;
+      resetPasswordButtonText.style.display = 'inline';
+      return;
+    }
+  
+    if (newPassword !== confirmPassword) {
+      showError("Passwords do not match. Please enter a matching password");
+  
+      // Hide the loader and re-enable the button
+      loader.style.display = 'none';
+      resetPasswordButton.disabled = false;
+      resetPasswordButtonText.style.display = 'inline';
+      return;
+    }
+  
+    const response = await fetch('https://m-d5jo.onrender.com/resetpassword', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ token, newPassword }),
+    });
+  
     // Hide the loader and re-enable the button
     loader.style.display = 'none';
     resetPasswordButton.disabled = false;
     resetPasswordButtonText.style.display = 'inline';
-    return;
-  }
-
-  if (newPassword !== confirmPassword) {
-    showError("Passwords do not match. Please enter a matching password");
-
-    // Hide the loader and re-enable the button
-    loader.style.display = 'none';
-    resetPasswordButton.disabled = false;
-    resetPasswordButtonText.style.display = 'inline';
-    return;
-  }
-
-  const response = await fetch('https://m-d5jo.onrender.com/resetpassword', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ token, newPassword }),
-  });
-
-  // Hide the loader and re-enable the button
-  loader.style.display = 'none';
-  resetPasswordButton.disabled = false;
-  resetPasswordButtonText.style.display = 'inline';
-
-  if (response.status === 200) {
-    // Show a success message and redirect to the login page
-    showError("Password Reset Successful. Please Close The Browser");
-  } else {
-    // Show an error message
-    showError("Password Reset Failed. Please Try Again");
-  }
-});
+  
+    if (response.status === 200) {
+      // Show a success message, hide the form, and update the h1 text
+      showError2("Password Reset Successful. Please Close The Browser");
+    } else {
+      // Show an error message
+      showError("Password Reset Failed. Please Try Again");
+    }
+  });  
 });
