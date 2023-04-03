@@ -52,79 +52,47 @@ function resetAnimation(element) {
   element.style.animation = "";
 }
 
-function toggleLoadingIcon(visible) {
-  const loadingIcon = document.getElementById("loading-icon");
-  loadingIcon.style.display = visible ? "inline-block" : "none";
+function toggleLoading(visible) {
+  const submitButton = document.getElementById("submit-button");
+  const loadingButton = document.getElementById("loading-button");
+  
+  submitButton.style.display = visible ? "none" : "inline-block";
+  loadingButton.style.display = visible ? "inline-block" : "none";
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  // Get the token from the URL
-  const urlParams = new URLSearchParams(window.location.search);
-  const token = urlParams.get('token');
 
-  // Set the token as a hidden input value
-  document.getElementById('token').value = token;
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const newPassword = document.getElementById("new-password").value;
+  const confirmPassword = document.getElementById("confirm-password").value;
 
-  // Password strength indicator
-    const newPasswordInput = document.getElementById("new-password");
-    newPasswordInput.addEventListener("input", (e) => {
-    const newPassword = e.target.value;
-    const { strength, text } = getPasswordStrength(newPassword);
-    const strengthBar = document.getElementById("password-strength-bar");
-    const strengthText = document.getElementById("password-strength-text");
-  
-    strengthBar.value = strength * 100;
-    strengthText.textContent = text;
-  
-    if (strength === 1) {
-      strengthBar.style.backgroundColor = "red";
-    } else if (strength === 2 / 4) {
-      strengthBar.style.backgroundColor = "orange";
-    } else if (strength === 3 / 4) {
-      strengthBar.style.backgroundColor = "yellow";
-    } else if (strength === 4 / 4) {
-      strengthBar.style.backgroundColor = "green";
-    } else {
-      strengthBar.style.backgroundColor = "";
-    }
+  if (newPassword === "") {
+    showError("Passwords cannot be null. Please enter the password");
+    return;
+  }
+
+  if (newPassword !== confirmPassword) {
+    showError("Passwords do not match. Please enter a matching password");
+    return;
+  }
+
+  toggleLoading(true);
+
+  const response = await fetch("https://m-d5jo.onrender.com/resetpassword", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ token, newPassword }),
   });
-  
 
-  // Handle the form submission
-  const form = document.getElementById('reset-password-form');
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const newPassword = document.getElementById("new-password").value;
-    const confirmPassword = document.getElementById('confirm-password').value;
+  toggleLoading(false);
 
-    if (newPassword === "") {
-      showError("Passwords cannot be null. Please enter the password");
-      return;
-    }
-
-    if (newPassword !== confirmPassword) {
-        showError("Passwords do not match. Please enter a matching password");
-      return;
-    }
-
-    toggleLoadingIcon(true);
-
-    const response = await fetch('https://m-d5jo.onrender.com/resetpassword', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ token, newPassword }),
-    });
-
-    toggleLoadingIcon(false);
-
-    if (response.status === 200) {
-      // Show a success message and redirect to the login page
-      showError("Password Reset Successful. Please Close The Browser");
-    } else {
-      // Show an error message
-      showError("Password Reset Failed. Please Try Again");
-    }
-  });
+  if (response.status === 200) {
+    // Show a success message and redirect to the login page
+    showError("Password Reset Successful. Please Close The Browser");
+  } else {
+    // Show an error message
+    showError("Password Reset Failed. Please Try Again");
+  }
 });
