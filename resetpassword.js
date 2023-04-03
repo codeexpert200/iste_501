@@ -52,6 +52,11 @@ function resetAnimation(element) {
   element.style.animation = "";
 }
 
+function toggleLoadingIcon(visible) {
+  const loadingIcon = document.getElementById("loading-icon");
+  loadingIcon.style.display = visible ? "inline-block" : "none";
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   // Get the token from the URL
   const urlParams = new URLSearchParams(window.location.search);
@@ -102,6 +107,8 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
+    toggleLoadingIcon(true);
+
     const response = await fetch('https://m-d5jo.onrender.com/resetpassword', {
       method: 'POST',
       headers: {
@@ -109,6 +116,8 @@ document.addEventListener('DOMContentLoaded', () => {
       },
       body: JSON.stringify({ token, newPassword }),
     });
+
+    toggleLoadingIcon(false);
 
     if (response.status === 200) {
       // Show a success message and redirect to the login page
