@@ -43,7 +43,7 @@ function showError(message) {
   setTimeout(() => {
     errorMessage.classList.remove("fadeOut");
     errorMessage.textContent = "";
-  }, 10000);
+  }, 5000);
 }
 
   // Handle the form submission
@@ -56,9 +56,15 @@ function showError(message) {
     setTimeout(() => {
       errorMessage.classList.remove("fadeOut");
       errorMessage.textContent = "";
-      document.querySelector('form').style.display = 'none';
+      document.getElementsByTagName('label').style.display = 'none';
+      document.getElementsByTagName('button').style.display = 'none';
+      document.getElementsByTagName('progress').style.display = 'none';
+      document.getElementsByTagName('div').style.display = 'none';
+      document.getElementsByTagName('input').style.display = 'none';
+      document.getElementsByTagName('p').style.display = 'none';
+      document.getElementsByTagName('span').style.display = 'none';
       document.querySelector('h1').textContent = message;
-    }, 10000);
+    }, 5000);
   }
 
 function resetAnimation(element) {
@@ -152,10 +158,10 @@ document.addEventListener('DOMContentLoaded', () => {
   
     if (response.status === 200) {
       // Show a success message, hide the form, and update the h1 text
-      showError("Password Reset Failed. Please Try Again");
+      showError2("Password Reset Successful. Please Close The Browser");
     } else {
       // Show an error message
-      showError2("Password Reset Successful. Please Close The Browser");
+      showError("Password Reset Failed. Please Try Again");
     }
   });  
 });
