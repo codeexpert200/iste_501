@@ -163,10 +163,10 @@ document.addEventListener('DOMContentLoaded', () => {
   
     if (response.status === 200) {
       // Show a success message, hide the form, and update the h1 text
-      showError("Password Reset Failed. Please Try Again");
+      displaySuccessMessage("Password Reset Successful. Please Close The Browser");
     } else {
       // Show an error message
-      displaySuccessMessage("Password Reset Successful. Please Close The Browser");
+      showError("Password Reset Failed. Please Try Again");
     }
   });  
 });
